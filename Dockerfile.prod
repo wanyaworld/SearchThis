@@ -1,7 +1,6 @@
 # cra build environment
 FROM node:13.12.0-alpine as build
 WORKDIR /app
-#ENV PATH /app/node_modules/.bin:$PATH
 COPY package.json /app/package.json
 COPY package-lock.json /app/package-lock.json
 RUN npm ci --silent
@@ -15,22 +14,16 @@ RUN npm run build
 
 # production environment
 FROM ubuntu:18.04
-
 WORKDIR /django_static
+EXPOSE 80
 
 # configure apache
 RUN apt-get update && \
  apt-get -y install apache2
-
 COPY --from=build /app/build /var/www/html
 RUN echo '. /etc/apache2/envvars' > /root/run_apache.sh && \
- #echo 'mkdir -p /var/run/apache2' >> /root/run_apache.sh && \
- #echo 'mkdir -p /var/lock/apache2' >> /root/run_apache.sh && \ 
- #echo '/usr/sbin/apache2 -D FOREGROUND' >> /root/run_apache.sh && \ 
  echo 'service apache2 start' >> /root/run_apache.sh && \ 
  chmod 755 /root/run_apache.sh
-
-EXPOSE 80
 
 # django build environment
 RUN apt-get install python3-pip libapache2-mod-wsgi-py3 -y
@@ -50,12 +43,6 @@ RUN echo 'pip3 install virtualenv' > /root/run_django.sh && \
  echo 'cp -r /tmp/pages /django_static/' >> /root/run_django.sh && \
  echo 'cp -r /tmp/leads /django_static/' >> /root/run_django.sh && \
  echo 'cp /tmp/000-default.conf /etc/apache2/sites-available/000-default.conf' >> /root/run_django.sh && \
- echo './manage.py migrate' >> /root/run_django.sh && \
- echo 'yes | ./manage.py collectstatic' >> /root/run_django.sh && \
- echo 'chmod 644 /django_static/db.sqlite3' >> /root/run_django.sh && \
- echo 'chown :www-data /django_static/db.sqlite3' >> /root/run_django.sh && \
- echo 'chown :www-data /django_static' >> /root/run_django.sh && \
- #echo './manage.py runserver 0.0.0.0:8000 &' >> /root/run_django.sh && \
  echo 'deactivate' >> /root/run_django.sh && \
  chmod 755 /root/run_django.sh
 
@@ -64,8 +51,4 @@ RUN echo '/root/run_django.sh' > /root/execute.sh && \
     echo 'sleep infinity' >> /root/execute.sh && \
     chmod 755 /root/execute.sh
 
-# cmd commands
-#CMD /root/run_apache.sh
 CMD /root/execute.sh
-#CMD /root/run_django.sh && /root/run_apache.sh
-#CMD /root/run_django.sh
