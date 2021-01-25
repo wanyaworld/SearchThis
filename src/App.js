@@ -41,8 +41,15 @@ class QueryParamsDemo extends Component {
   }
 
   handleSubmit(event) {
-    alert(this.state.value);
     event.preventDefault();
+    let query = this.state.value;
+    axios.get('http://localhost:80/django/api/' + query)
+      .then(res => {
+        console.log('response is.. : ' + JSON.stringify(res));
+      })
+      .catch(e => {
+        console.log(e);
+      });
   }
 
   render() {
