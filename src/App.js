@@ -41,8 +41,11 @@ class QueryParamsDemo extends Component {
   }
 
   handleSubmit(event) {
-    alert(this.state.value);
     event.preventDefault();
+    axios.get('127.0.0.1/django/api/' + this.state.value)
+      .then(res => {
+        alert(res);
+      })
   }
 
   render() {
