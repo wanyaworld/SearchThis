@@ -11,7 +11,17 @@ class LeadListCreate(generics.ListCreateAPIView):
 
 def queryResultView(request, query):
     data = {
-        'query': query,
-        'result': 'service not impled yet',
+        'documents': [
+            {
+            'query': query,
+            'title': 'Title 1',
+            'content': 'This iss the 1st content.',
+            },
+            {
+            'query': query,
+            'title': 'Title 2',
+            'content': 'This iss the 2nd content.',
+            },
+        ]
     }
     return JsonResponse(data);
