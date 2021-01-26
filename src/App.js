@@ -2,6 +2,7 @@ import logo from './main.jpg';
 import './App.css';
 import axios from 'axios';
 import React, { Component } from "react";
+import ReactJson from 'react-json-view';
 import {
   BrowserRouter as Router,
   Link,
@@ -30,7 +31,7 @@ export default function QueryParamsExample() {
 class QueryParamsDemo extends Component {
   constructor(props) {
     super(props);
-    this.state = {value: ''};
+    this.state = {value: '', result: ''};
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -45,7 +46,8 @@ class QueryParamsDemo extends Component {
     let query = this.state.value;
     axios.get('http://localhost:80/django/api/' + query)
       .then(res => {
-        console.log('response is.. : ' + JSON.stringify(res));
+        this.setState({result: res.data});
+        console.log('response is.. : ' + JSON.stringify(res.data));
       })
       .catch(e => {
         console.log(e);
@@ -60,19 +62,21 @@ class QueryParamsDemo extends Component {
           Submit your query.
 	          <form onSubmit={this.handleSubmit}>
               Query: 
-            <input type="text" value={this.state.value} onChange={this.handleChange} />
+            <input type="text" value={this.state.value} 
+            onChange={this.handleChange} />
            
             <input type="submit" value="Submit" />
             </form>
         </p>
-        <Child query={this.state.value} />
+        <Helper query={this.state.value} />
+        <QueryResult query={this.state.value} result={this.state.result} />
       </div>
     </div>
   );
   }
 }
 
-function Child({ query }) {
+function Helper({ query }) {
   return (
     <div>
       {query ? (
@@ -81,7 +85,7 @@ function Child({ query }) {
           &quot;
         </h3>
       ) : (
-        <h3>There is no query string</h3>
+        <div></div>
       )}
       <h3>
           Let's query it to the django server side!
@@ -89,3 +93,16 @@ function Child({ query }) {
     </div>
   );
 }
+
+function QueryResult({ query, result }) {
+  return (
+    <div>
+    { result ? (
+      <ReactJson src={result} theme="monakai" />
+    ) : (
+      <div></div>
+    )}
+    </div>
+  )
+}
+
