@@ -26,6 +26,7 @@ RUN echo '. /etc/apache2/envvars' > /root/run_apache.sh && \
  chmod 755 /root/run_apache.sh
 
 # configure django
+RUN apt-get update
 RUN apt-get install python3-pip libapache2-mod-wsgi-py3 -y
 COPY django/settings.py /tmp/settings.py
 COPY django/urls.py /tmp/urls.py
