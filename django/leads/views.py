@@ -3,6 +3,7 @@ from django.http import HttpResponse, JsonResponse
 from .models import Lead
 from .serializers import LeadSerializer
 from rest_framework import generics
+import requests
 
 # Create your views here.
 class LeadListCreate(generics.ListCreateAPIView):
@@ -10,18 +11,5 @@ class LeadListCreate(generics.ListCreateAPIView):
     serializer_class = LeadSerializer
 
 def queryResultView(request, query):
-    data = {
-        'documents': [
-            {
-            'query': query,
-            'title': 'Title 1',
-            'content': 'This iss the 1st content.',
-            },
-            {
-            'query': query,
-            'title': 'Title 2',
-            'content': 'This iss the 2nd content.',
-            },
-        ]
-    }
-    return JsonResponse(data);
+    r = requests.get("http://ec2-3-141-32-127.us-east-2.compute.amazonaws.com/django/api/" + query);
+    return JsonResponse(r.json());

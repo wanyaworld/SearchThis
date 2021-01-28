@@ -38,6 +38,7 @@ RUN echo 'pip3 install virtualenv' > /root/run_django.sh && \
  echo '. myprojectenv/bin/activate' >> /root/run_django.sh && \
  echo 'pip3 install django' >> /root/run_django.sh && \
  echo 'pip3 install djangorestframework' >> /root/run_django.sh && \
+ echo 'pip3 install requests' >> /root/run_django.sh && \
  echo 'django-admin.py startproject myproject .' >> /root/run_django.sh && \
  echo 'cp /tmp/settings.py /django_static/myproject/settings.py' >> /root/run_django.sh && \
  echo 'cp /tmp/urls.py /django_static/myproject/urls.py' >> /root/run_django.sh && \
